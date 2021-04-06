@@ -89,7 +89,7 @@ def time_convert(str):
         startTime = datetime.datetime.strptime(startTime, '%I:%M%p')
         endTime = t.split('-')[1]
         endTime = datetime.datetime.strptime(endTime, '%I:%M%p')
-        timelist.append([startTime, endTime])
+        timelist.append((startTime, endTime))
     return timelist
 
 
