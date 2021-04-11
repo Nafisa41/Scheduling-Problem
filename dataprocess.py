@@ -47,12 +47,19 @@ def process_classcnt(credit, is_lab):
         return 2
     if(credits == 2):
         return 2
+    else:
+        return 2
+
+def check_unique_course(crs_name):
+    for i in range(len(courselist)):
+        if(courselist[i].course_name == crs_name):
+            return False
+    return True
 
 def process_course():
     #reading data from undergradcurriculum for courses
-    df_course = pd.read_excel("ASST 03_ Input.xlsx", "AssignedCourses")
+    df_course = pd.read_excel("input.xlsx", "Sheet2")
     course_matrix = df_course.to_numpy()
-    course_matrix[0][0]
     for i in range(course_matrix.shape[0]):
         for j in range(course_matrix.shape[1]):
             if(pd.isnull(course_matrix[i][j]) or j == 0):
@@ -67,17 +74,18 @@ def process_course():
             crs_lab = (chunks[1][2] == '1')
             crs_classcnt = process_classcnt(crs_credit, crs_lab)
             teacher_course_mp[course_matrix[i][j]] = course_matrix[i][0]
-            courselist.append(Course(course_matrix[i][j], crs_credit, crs_year, crs_lab, crs_classcnt))
-
+            if(check_unique_course(course_matrix[i][j]) == True):
+                C = Course(course_matrix[i][j], crs_credit, crs_year, crs_lab, crs_classcnt)
+                courselist.append(C)
+    
     # i = 0
     # for i in range(len(courselist)):
     #     print(courselist[i].course_name + ' ' + str(courselist[i].credit) + ' ' + str(courselist[i].course_year) + ' ' + str(courselist[i].lab_course) + ' ' + str(courselist[i].class_cnt))
 
-
 def process_teacher():
     #reading data from assigned and validtimeslots for teachers
-    df_assignedcourses = pd.read_excel("ASST 03_ Input.xlsx", "AssignedCourses")
-    df_validtimeslot = pd.read_excel("ASST 03_ Input.xlsx", "ValidTimeSlots")
+    df_assignedcourses = pd.read_excel("input.xlsx", "Sheet2")
+    df_validtimeslot = pd.read_excel("input.xlsx", "Sheet3")
     assignedcrs_matrix = df_assignedcourses.to_numpy()
     validtime_matrix = df_validtimeslot.to_numpy()
     i = 0
@@ -119,4 +127,3 @@ def time_convert(str):
 process_curriculum()
 process_course()
 process_teacher()
-print(teacher_course_mp)
