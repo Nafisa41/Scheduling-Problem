@@ -47,11 +47,10 @@ def process_teacher_time():
         teacher_time.append([])
 
 
-# courseIndex, teacherIndex, slotIndex, ?
-def read_course_teacher_free(course_idx, teacher_idx, time_idx, id): #id 0 for course and 1 for teacher
+def read_course_teacher_free(course_idx, teacher_idx, time_idx, id):
     flag = True
-    day = timeslots[time_idx][0]        # Sunday/Monday
-    start_time = timeslots[time_idx][1] # 8.30/10/11.30
+    day = timeslots[time_idx][0]       
+    start_time = timeslots[time_idx][1]
     end_time = timeslots[time_idx][1] + courselist[course_idx].duration
     if(end_time >  datetime.datetime.strptime('05:00 PM', '%I:%M %p') or end_time ==  datetime.datetime.strptime('02:30 PM', '%I:%M %p')):      # 2.30 ??
         return False
@@ -59,12 +58,11 @@ def read_course_teacher_free(course_idx, teacher_idx, time_idx, id): #id 0 for c
     temp_list = []
     if(id == 0):
         temp_list = year_time
-        list_idx = courselist[course_idx].course_year   # Which year basically
+        list_idx = courselist[course_idx].course_year 
     else:
         temp_list = teacher_time
         list_idx = teacher_idx
 
-        # Check if teacher actually have free time for this class
         possible = False
 
         for t in teacherlist[teacher_idx].valid_time[diction_day[day]]:
@@ -72,12 +70,8 @@ def read_course_teacher_free(course_idx, teacher_idx, time_idx, id): #id 0 for c
                 if(time_idx == 2 and teacher_idx==1):
                     print(t[0], t[1], start_time, end_time)
                 possible = True
-                break;
+                break
 
-        # DEBUG
-        # print('Possible?', possible)
-        # if(time_idx == 2 and teacher_idx==1):
-        #     print(teacherlist[teacher_idx].teacher_initial)
 
         if not possible:
             return False
@@ -89,7 +83,6 @@ def read_course_teacher_free(course_idx, teacher_idx, time_idx, id): #id 0 for c
         st = temp_list[list_idx][i][0]
         et = temp_list[list_idx][i][1]
         if((start_time >= st and start_time < et) or (end_time > st and end_time <= et)):
-        # if(start_time >= st and end_time < et):
             flag = False
     return flag
 
@@ -121,13 +114,6 @@ def update_course_free(course_idx, time_idx, op):
     templist[2] = timeslots[time_idx][0]
     templist[3] = courselist[course_idx].course_name
 
-    """ DEBUG
-    templist =  [ 
-                    [courseStartingTime, courseEndingTime, day, courseName],
-                    [                                                     ],
-                    [                                                     ]
-                ]    
-    """
 
     if(op == "append"):
         year_time[year].append(templist)
@@ -161,7 +147,6 @@ def read_course_day(idx, course_name):
     else:
         return True
 
-# DEBUG
 def printRoutine():
     print('Printing Class Routine -------------')
     for r in class_routine:
@@ -172,19 +157,15 @@ def update_assignment(idx, id):
 
     if id==0:
         for i in range(len(courselist)):
-            # teacher_idx_list = find_teacher_idx(teacher_course_mp[courselist[i].course_name])
-            year_free = read_course_teacher_free(i, None, idx, 0)    # courseIndex, teacherIndex, slotIndex, ?
+            year_free = read_course_teacher_free(i, None, idx, 0)  
             teacher_free = True
             teacher_idx_list = []
 
-            # teacher_course_mp = { 'CSE 3211 Section 1': [MMR, AI] }
             for teacher in teacher_course_mp[courselist[i].course_name]:
                 teacher_idx = find_teacher_idx(teacher)
                 teacher_idx_list.append(teacher_idx)
                 teacher_free = teacher_free and read_course_teacher_free(i, teacher_idx, idx, 1)
 
-            # DEBUG
-            # print('Teacher:', teacherlist[teacher_idx].teacher_initial, year_free, teacher_free)
             course_day_notfill = read_course_day(diction_day[timeslots[idx][0]], courselist[i].course_name)
             if(year_free == True and teacher_free == True and read_course_cnt(i) == True and course_day_notfill == True):
                 if(id == 0):
@@ -211,33 +192,16 @@ def update_assignment(idx, id):
 
 
 def func(idx):
-    # DEBUG
-    # print(idx)
 
     if(idx == 25):
         for i in range(len(class_routine)):
             print(class_routine[i].teacher_initial + ' ' + class_routine[i].time[0] + ' ' + str(class_routine[i].time[1]).split()[1] + ' ' + class_routine[i].course)
         sys.exit()
 
-    updated_courses = update_assignment(idx, 0)    # For assigning
+    updated_courses = update_assignment(idx, 0) 
 
-    # DEBUG
-    # printRoutine()
-    # print('calling', idx+1)
     func(idx + 1)
-    updated_courses = update_assignment(idx, 1)    # For assigning
-    # print('done call', idx)
-
-# DEBUG
-# for i in courselist:
-#     print(i.course_name)
-# for t in teacherlist:
-#     for vt in t.valid_time:
-#         print(vt)
-#     print('Teacher Done')
-
-# print(teacher_course_mp)
-
+    updated_courses = update_assignment(idx, 1) 
 
 process_diction_day()
 process_timeslot_list()

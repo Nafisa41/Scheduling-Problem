@@ -1,7 +1,4 @@
-#things to remember:
-# you took credit as float
-#lab class ekta kore dhorsi always
-#shob section ke alada course hishabe chinta korsi
+
 import pandas as pd 
 import numpy as np
 import math
@@ -85,9 +82,7 @@ def process_course():
                 C = Course(course_matrix[i][j], crs_credit, crs_year, crs_lab, crs_classcnt)
                 courselist.append(C)
             teacher_course_mp[course_matrix[i][j]].append(course_matrix[i][0])
-    # i = 0
-    # for i in range(len(courselist)):
-    #     print(courselist[i].course_name + ' ' + str(courselist[i].credit) + ' ' + str(courselist[i].course_year) + ' ' + str(courselist[i].lab_course) + ' ' + str(courselist[i].class_cnt))
+    
 
 def process_teacher():
     #reading data from assigned and validtimeslots for teachers
@@ -141,9 +136,3 @@ def time_convert(str):
 process_curriculum()
 process_course()
 process_teacher()
-# t_name = assignedcrs_matrix[i][0]
-        # t_idx = int(0)
-        # for k  in range(validtime_matrix.shape[0]):
-        #     if(validtime_matrix[k][0] == t_name):
-        #         t_idx = k
-        #         break
