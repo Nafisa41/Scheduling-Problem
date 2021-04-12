@@ -11,6 +11,12 @@ teacherlist = []
 sectionthree = []
 dict_credit = {}
 teacher_course_mp = {}
+class Routine:
+    def __init__(self, teacher_initial, time, course):
+        self.teacher_initial = teacher_initial
+        self.time = time
+        self.course = course
+
 class Course:
     def __init__(self, course_name, credit, course_year, lab_course, class_cnt):
         self.course_name = course_name
@@ -34,7 +40,7 @@ class Teacher:
 
 
 def process_curriculum():
-    df_curr = pd.read_excel("ASST 03_ Input.xlsx", "UndergradCurriculum (Pre-fed)")
+    df_curr = pd.read_excel("input.xlsx", "Sheet4")
     curr_matrix = df_curr.to_numpy()
     i = 0
     for i in range((curr_matrix.shape[0])):
@@ -73,11 +79,12 @@ def process_course():
             crs_year = int(chunks[1][0])
             crs_lab = (chunks[1][2] == '1')
             crs_classcnt = process_classcnt(crs_credit, crs_lab)
-            teacher_course_mp[course_matrix[i][j]] = course_matrix[i][0]
+            
             if(check_unique_course(course_matrix[i][j]) == True):
+                teacher_course_mp[course_matrix[i][j]] = []
                 C = Course(course_matrix[i][j], crs_credit, crs_year, crs_lab, crs_classcnt)
                 courselist.append(C)
-    
+            teacher_course_mp[course_matrix[i][j]].append(course_matrix[i][0])
     # i = 0
     # for i in range(len(courselist)):
     #     print(courselist[i].course_name + ' ' + str(courselist[i].credit) + ' ' + str(courselist[i].course_year) + ' ' + str(courselist[i].lab_course) + ' ' + str(courselist[i].class_cnt))
@@ -100,13 +107,20 @@ def process_teacher():
                 section_str = assignedcrs_matrix[i][j].split(' ')
                 if(len(section_str) == 4 and int(section_str[3][0]) == 3):
                     sectionthree.append(section_str[0] + ' ' + section_str[1])
-                    
+
+        t_name = assignedcrs_matrix[i][0]
+        t_idx = int(0)
+        for k  in range(validtime_matrix.shape[0]):
+            if(validtime_matrix[k][0] == t_name):
+                t_idx = k
+                break    
+
         temp_list = []
         for j in range(validtime_matrix.shape[1]):
-            if(j == 0):
+            if(j == 0 or j==1 or j==7):
                 continue
-            if(pd.isnull(validtime_matrix[i][j]) == False):
-                temp_list.append(time_convert(validtime_matrix[i][j]))
+            if(pd.isnull(validtime_matrix[t_idx][j]) == False):
+                temp_list.append(time_convert(validtime_matrix[t_idx][j]))
             else:
                 temp_list.append([])
         teacherlist.append(Teacher(assignedcrs_matrix[i][0], crslist, temp_list))        
@@ -127,3 +141,9 @@ def time_convert(str):
 process_curriculum()
 process_course()
 process_teacher()
+# t_name = assignedcrs_matrix[i][0]
+        # t_idx = int(0)
+        # for k  in range(validtime_matrix.shape[0]):
+        #     if(validtime_matrix[k][0] == t_name):
+        #         t_idx = k
+        #         break
