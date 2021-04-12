@@ -9,10 +9,10 @@ from dataprocess import teacherlist
 from dataprocess import teacher_course_mp
 year_time = [[],[],[],[],[]] #start time end time day and section
 teacher_time = []
+course_day = [[], [], [], [], []]
 class_routine = []
 diction_day = {}
 timeslots = []
-course_day = [[], [], [], [], []]
 course_cnt = numpy.full((60), 0)
 valid_time = [
     datetime.datetime.strptime('08:30 AM', '%I:%M %p'),
@@ -72,7 +72,7 @@ def read_course_teacher_free(course_idx, teacher_idx, time_idx, id): #id 0 for c
                 if(time_idx == 2 and teacher_idx==1):
                     print(t[0], t[1], start_time, end_time)
                 possible = True
-                break
+                break;
 
         # DEBUG
         # print('Possible?', possible)
@@ -185,7 +185,7 @@ def update_assignment(idx, id):
 
             # DEBUG
             # print('Teacher:', teacherlist[teacher_idx].teacher_initial, year_free, teacher_free)
-            course_day_notfill = read_course_day(diction_day[timeslots[idx][0]], courselist[i].course_name) 
+            course_day_notfill = read_course_day(diction_day[timeslots[idx][0]], courselist[i].course_name)
             if(year_free == True and teacher_free == True and read_course_cnt(i) == True and course_day_notfill == True):
                 if(id == 0):
                     updated_courses.append(i)
